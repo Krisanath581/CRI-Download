@@ -1,0 +1,104 @@
+<?php 
+
+ session_start();
+ require_once("config/db_connect");
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <title>CRI Download</title>
+</head>
+
+<body>
+
+    <!-- Add data -->
+    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                <!-- enctype="multipart/form-data" เป็นการเพิ่มรูปภาพ -->
+                    <form action="insert.php" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="img_name" class="col-form-label">ชื่อโปรแกรม</label>
+                            <input type="text" class="form-control" name="img_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="img_content" class="col-form-label">คำบรรยาย</label>
+                            <input type="text" class="form-control" name="img_content">
+                        </div>
+                        <div class="mb-3">
+                            <label for="images" class="col-form-label">รูป</label>
+                            <input type="file" class="form-control" id="imgTnput" name="images">
+                            <img width="100%"  id="previewImg" alt="">
+                        </div>
+                        <div class="mb-3">
+                            <label for="files" class="col-form-label">ไฟล์</label>
+                            <input type="file" class="form-control" name="files">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                            <button type="submit" name="submit" class="btn btn-primary">ยืนยัน</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>CRI</h1>
+            </div>
+            <div class="col-md-6 d-flex justify-content-end">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userModal">เพิ่ม</button>
+            </div>
+        </div>
+        <?php if(isset($_SESSION['success'])) { ?>
+            <div class="alert aler-success">
+                    <?php 
+                    echo $_SESSION['success'];
+                    unset($_SESSION['success']);
+                    ?>
+            </div>
+        <?php } ?>
+        <?php if(isset($_SESSION['error'])) { ?>
+            <div class="alert aler-danger">
+                    <?php 
+                    echo $_SESSION['error'];
+                    unset($_SESSION['error']);
+                    ?>
+            </div>
+        <?php } ?>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"crossorigin="anonymous"></script>
+    <script>
+        let imgTnput =document.getElementById('imgTnput');
+        let previewImg =document.getElementById('previewImg');
+
+        imgTnput.onchange = evt => {
+            const [file] = imgTnput.files;
+            if(file) {
+                previewImg.src = URL.createObjectURL(file);
+            }
+        }
+    </script>
+
+</body>
+
+</html>
