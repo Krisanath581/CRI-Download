@@ -13,14 +13,14 @@ if (isset($_POST['submit'])) {
     $allow2 = array('pdf', 'exe');
     $extension2 = explode('.', $files['name']);
     $fileActExt2 = strtolower(end($extension2));
-    $fileNew2 = rand() . "." . $fileActExt2;
+    $fileNew2 = $files['name'];
     $filesPath2 = "upload_files/" . $fileNew2;
 
     // Handle file upload for 'images'
     $allow = array('jpg', 'jpeg', 'png');
     $extension = explode('.', $images['name']);
     $fileActExt = strtolower(end($extension));
-    $fileNew = rand() . "." . $fileActExt;
+    $fileNew = $_FILES['images'] . "." . $fileActExt;
     $filePath = "upload/" . $fileNew;
 
     if (in_array($fileActExt, $allow)) {
