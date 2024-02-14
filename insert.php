@@ -1,42 +1,54 @@
-<?php 
+<?php
 
- session_start();
- require_once("config/db_connect");
+session_start();
+require_once("config/db_connect");
 
- if(isset($_POST['submit'])) {
+if (isset($_POST['submit'])) {
     $img_name = $_POST['img_name'];
     $img_content = $_POST['img_content'];
     $images = $_FILES['images'];
     $files = $_FILES['files'];
 
-    $allow = array('jpg', 'jpeg','png');
+    // Handle file upload for 'files'
+    $allow2 = array('pdf', 'exe');
+    $extension2 = explode('.', $files['name']);
+    $fileActExt2 = strtolower(end($extension2));
+    $fileNew2 = rand() . "." . $fileActExt2;
+    $filesPath2 = "upload_files/" . $fileNew2;
+
+    // Handle file upload for 'images'
+    $allow = array('jpg', 'jpeg', 'png');
     $extension = explode('.', $images['name']);
     $fileActExt = strtolower(end($extension));
     $fileNew = rand() . "." . $fileActExt;
-    $filePath = "upload/".$fileNew;
-    $filesPath2 = "upload_files/".$files;
+    $filePath = "upload/" . $fileNew;
 
-    if(in_array($fileActExt, $allow)) {
-        if($images['size'] > 0 && $images['error'] == 0) {
-            if(move_uploaded_file($images['tmp_name'], $filePath) && move_uploaded_file($files['tmp_name'], $filesPath2 )) {
-                $sql = $conn->prepare("INSERT INTO stock_images(img_name, img_content,images, files ) VALUES(:img_name, :img_content , :images, :files)");
+    if (in_array($fileActExt, $allow)) {
+        if ($images['size'] > 0 && $images['error'] == 0) {
+            if (move_uploaded_file($images['tmp_name'], $filePath) && move_uploaded_file($files['tmp_name'], $filesPath2)) {
+                // Prepare and execute SQL query
+                $sql = $conn->prepare("INSERT INTO stock_images (img_name, img_content, images, files) VALUES (:img_name, :img_content, :images, :files)");
                 $sql->bindParam(":img_name", $img_name);
                 $sql->bindParam(":img_content", $img_content);
                 $sql->bindParam(":images", $fileNew);
-                $sql->bindParam(":files", $files);
+                $sql->bindParam(":files", $fileNew2);
                 $sql->execute();
 
-                if($sql) {
+                // Check if the query was successful
+                if ($sql) {
                     $_SESSION["success"] = "เพิ่มสำเร็จแล้ว";
                     header("location: index.php");
-                }else{
+                    exit;
+                } else {
                     $_SESSION["error"] = "เพิ่มไม่สำเร็จ";
                     header("location: index.php");
+                    exit;
                 }
             }
-        }       
+        }
     }
- }
+}
 
+// Add any additional cleanup or redirection logic here if needed
 
 ?>

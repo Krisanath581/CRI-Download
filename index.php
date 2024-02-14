@@ -3,6 +3,8 @@
  session_start();
  require_once("config/db_connect");
 
+
+
 ?>
 
 <!DOCTYPE html>
@@ -67,7 +69,7 @@
             </div>
         </div>
         <?php if(isset($_SESSION['success'])) { ?>
-            <div class="alert aler-success">
+            <div class="alert alert-success my-3">
                     <?php 
                     echo $_SESSION['success'];
                     unset($_SESSION['success']);
@@ -75,13 +77,50 @@
             </div>
         <?php } ?>
         <?php if(isset($_SESSION['error'])) { ?>
-            <div class="alert aler-danger">
+            <div class="alert alert-danger">
                     <?php 
                     echo $_SESSION['error'];
                     unset($_SESSION['error']);
                     ?>
             </div>
         <?php } ?>
+
+        <table class="table table-striped mt-5">
+  <thead>
+    <tr>
+      <th scope="col">ลำดับ</th>
+      <th scope="col">ชื่อโปรแกรม</th>
+      <th scope="col">รายละเอียด</th>
+      <th scope="col">รูป</th>
+      <th scope="col">ไฟล์</th>
+      <th scope="col">เครื่องมือ</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php 
+        $stmt = $conn->query("SELECT * FROM stock_images");
+        $stmt->execute();
+        $stocks = $stmt->fetchAll();
+
+        if(!$stocks) {
+            echo "<tr><td colspan='6' class='text-center'>ไม่มีข้อมูล</td></tr>";
+        }else{
+            foreach($stocks as $stock_images) {
+    ?>
+                <tr>
+                <th scope="row"><?= $stock_images['id'];?></th>
+                <td><?= $stock_images['img_name'];?></td>
+                <td><?= $stock_images['img_content'];?></td>
+                <td width="250px"><img width="50%" src="upload/<?=$stock_images['images'];?>" class="rounded" alt=""></td>
+                <td><?= $stock_images['files'];?></td>
+                </td>
+              </tr>
+          <?php  }
+        }   ?>
+
+  </tbody>
+</table>
+
     </div>
 
 
