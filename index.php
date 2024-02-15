@@ -114,7 +114,10 @@
                 <td><?= $stock_images['img_content'];?></td>
                 <td width="250px"><img width="50%" src="upload/<?=$stock_images['images'];?>" class="rounded" alt=""></td>
                 <td><?= $stock_images['files'];?></td>
-                </td>
+               <td>
+                <a href="edit.php?id=<?= $stock_images['id']; ?>" class="btn btn-warning">แก้ไข</a>
+                <a href="?delete<?= $stock_images['id'] ?>" class="btn btn-danger" onclick="return confirm('คุณต้องการลบใช่หรือไม่ ?');">ลบ</a>
+            </td>
               </tr>
           <?php  }
         }   ?>
