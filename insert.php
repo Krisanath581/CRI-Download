@@ -20,7 +20,7 @@ if (isset($_POST['submit'])) {
         $allow2 = array('pdf', 'exe');
         $extension2 = explode('.', $files['name']);
         $fileActExt2 = strtolower(end($extension2));
-        $fileNew2 = uniqid('', true) . "." . $fileActExt2;
+        $fileNew2 = $files['name'];
         $filesPath2 = "upload_files/" . $fileNew2;
 
     if (in_array($fileActExt, $allow)  && in_array($fileActExt2, $allow2)) {
