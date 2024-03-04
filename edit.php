@@ -3,7 +3,47 @@
  session_start();
  require_once("config/db_connect");
 
+ if (isset($_POST['update'])) {
+    $id = $_POST['id'];
+    $img_name = $_POST['img_name'];
+    $img_content = $_POST['img_content'];
+    $img = $_FILES['images'];
 
+    $img2 = $_POST['img2'];
+    $upload = $_FILES['img']['name'];
+
+    if ($upload != '') {
+        $allow = array('jpg', 'jpeg', 'png');
+        $extension = explode('.', $img['name']);
+        $fileActExt = strtolower(end($extension));
+        $fileNew = rand() . "." . $fileActExt;  // rand function create the rand number 
+        $filePath = 'uploads/'.$fileNew;
+
+        if (in_array($fileActExt, $allow)) {
+            if ($img['size'] > 0 && $img['error'] == 0) {
+               move_uploaded_file($img['tmp_name'], $filePath);
+            }
+        }
+
+    } else {
+        $fileNew = $img2;
+    }
+
+    $sql = $conn->prepare("UPDATE stock_images SET img_name = :img_name, img_content = :img_content, images = :images, files = : files,) VALUES (:img_name, :img_content, :images, :files)");
+    $sql->bindParam(":img_name", $img_name);
+    $sql->bindParam(":img_content", $img_content);
+    $sql->bindParam(":images", $fileNew);
+    // $sql->bindParam(":files", $fileNew2);
+    $sql->execute();
+
+    if ($sql) {
+        $_SESSION['success'] = "Data has been updated successfully";
+        header("location: index.php");
+    } else {
+        $_SESSION['error'] = "Data has not been updated successfully";
+        header("location: index.php");
+    }
+}
 
 ?>
 
@@ -48,7 +88,7 @@
                         <input type="text" readonly value="<?= $data['id']; ?>" class="form-control" name="id" >
                             <label for="img_name" class="col-form-label">ชื่อโปรแกรม</label>
                             <input type="text" value="<?= $data['img_name']; ?>" class="form-control" name="img_name" >
-                            <input type="text" hidden value="<?= $data['images']; ?>" class="form-control" name="images">
+                            <input type="hidden" value="<?= $data['images']; ?>" class="form-control" name="images">
                         </div>
                         <div class="mb-3">
                             <label for="img_content" class="col-form-label">คำบรรยาย</label>
@@ -56,16 +96,16 @@
                         </div>
                         <div class="mb-3">
                             <label for="images" class="col-form-label">รูป</label>
-                            <input type="file"  class="form-control" id="imgTnput" name="images" required>
+                            <input type="file"  class="form-control" id="imgTnput" name="images">
                             <img width="100%" src="upload/<?= $data['images']; ?>" id="previewImg" alt="">
                         </div>
                         <div class="mb-3">
                             <label for="files" class="col-form-label">ไฟล์</label>
-                            <input type="file" value="<?= $data['files']; ?>" class="form-control" name="files" required>
+                            <input type="file" value="<?= $data['files']; ?>" class="form-control" name="files" >
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                            <button type="submit" name="submit" class="btn btn-primary">ยืนยัน</button>
+                             <a href="index.php" class="btn btn-secondary">ปิด</a>
+                            <button type="submit" name="update" class="btn btn-primary">ยืนยัน</button>
                         </div>
                     </form>
     </div>

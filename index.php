@@ -3,7 +3,18 @@
  session_start();
  require_once("config/db_connect");
 
+ if (isset($_GET['delete'])) {
+    $delete_id = $_GET['delete'];
+    $deletestmt = $conn->query("DELETE FROM users WHERE id = $delete_id");
+    $deletestmt->execute();
 
+    if ($deletestmt) {
+        echo "<script>alert('Data has been deleted successfully');</script>";
+        $_SESSION['success'] = "Data has been deleted succesfully";
+        header("refresh:1; url=index.php");
+    }
+    
+}
 
 ?>
 
@@ -116,7 +127,7 @@
                 <td><?= $stock_images['files'];?></td>
                <td>
                 <a href="edit.php?id=<?= $stock_images['id']; ?>" class="btn btn-warning">แก้ไข</a>
-                <a href="?delete<?= $stock_images['id'] ?>" class="btn btn-danger" onclick="return confirm('คุณต้องการลบใช่หรือไม่ ?');">ลบ</a>
+                <a href="?delete=<?= $stock_images['id']; ?>" onclick="return confirm('คุณต้องการลบใช่หรือไม่ ?');" class="btn btn-danger">ลบ</a>
             </td>
               </tr>
           <?php  }
